@@ -1,0 +1,7 @@
+if(MODULE1_IS_APP.toBoolean()){
+    include ':module1', ':framework', ':baseresource'
+}else{
+    include ':app', ':module1', ':framework', ':baseresource'
+}
+
+
