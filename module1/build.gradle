@@ -1,0 +1,67 @@
+////解决问题1
+if (MODULE1_IS_APP.toBoolean()) {
+    apply plugin: 'com.android.application'
+    // //解决问题7
+//    apply plugin: 'com.antfortune.freeline'
+} else {
+    apply plugin: 'com.android.library'
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+
+        if (MODULE1_IS_APP.toBoolean()) {
+            multiDexEnabled true
+        }
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildTypes.each {
+        ////解决问题6 代码中可以通过BuildConfig.TTH_IS_APP获取
+        it.buildConfigField "boolean", "MODULE1_IS_APP", MODULE1_IS_APP
+    }
+
+    //解决问题3 (只能做到布局文件，字符串等资源前缀，java类，图片需要自己处理)
+    resourcePrefix "module1_"
+
+    sourceSets {
+        main {
+            ////解决问题2、5
+            if (MODULE1_IS_APP.toBoolean()) {
+                //通通乐如果是app启动，使用该 清单文件
+                manifest.srcFile 'src/main/xml/app/AndroidManifest.xml'
+
+            } else {
+                manifest.srcFile 'src/main/xml/library/AndroidManifest.xml'
+
+                java{
+                    exclude '**/debug/**'
+                }
+            }
+        }
+    }
+
+    configurations {
+        all*.exclude group: 'com.android.support', module: 'support-v4'
+        all*.exclude group: 'com.android.support', module: 'support-annotations'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':framework')
+    compile project(':baseresource')
+}
