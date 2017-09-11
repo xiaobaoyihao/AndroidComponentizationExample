@@ -3,5 +3,3 @@ if(MODULE1_IS_APP.toBoolean()){
 }else{
     include ':app', ':module1', ':framework', ':baseresource'
 }
-
-
